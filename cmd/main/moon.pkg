@@ -1,0 +1,9 @@
+import {
+  "JingLan0v0/tracegate",
+}
+
+pkgtype(kind: "executable")
+
+options(
+  link: { "js": { "format": "cjs" } },
+)

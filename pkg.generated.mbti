@@ -1,0 +1,35 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "JingLan0v0/tracegate"
+
+// Values
+pub fn check_budget(Profile, Profile, Json) -> Json raise TraceError
+
+pub fn parse_json(String) -> Json raise TraceError
+
+pub fn profile(Json) -> Profile raise TraceError
+
+pub fn version() -> String
+
+// Errors
+pub(all) suberror TraceError {
+  TraceError(String, String)
+}
+
+// Types and methods
+pub struct Profile {
+  totals : Map[(String, String), SpanStats]
+  spans : Int32
+  skipped : Int32
+}
+pub fn Profile::lookup(Self, String, String) -> SpanStats?
+
+pub(all) struct SpanStats {
+  count : Int32
+  total_ns : Int64
+  self_ns : Int64
+  max_ns : Int64
+}
+
+// Type aliases
+
+// Traits
