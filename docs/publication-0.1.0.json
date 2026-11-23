@@ -1,0 +1,127 @@
+{
+  "version": "0.1.0",
+  "sourceCommit": "54e05f09a6a44460a6db0f6834286007561889cc",
+  "registryEntry": {
+    "name": "JingLan0v0/tracegate",
+    "readme": "README.md",
+    "yanked": false,
+    "license": "Apache-2.0",
+    "version": "0.1.0",
+    "checksum": "098a9801d22dcca6e63b809e6c0756ce6d644b5104bb3a01d7977efbfb4cc1a3",
+    "keywords": [
+      "tracing",
+      "performance",
+      "regression",
+      "cli"
+    ],
+    "created_at": "2026-11-23T13:23:01.429050+00:00",
+    "repository": "https://github.com/JingLan0v0/MoonTraceGate",
+    "description": "Check performance regression budgets from nested Chrome Trace JSON duration events.",
+    "yanked_reason": null,
+    "preferred-target": "js",
+    "supported-targets": "js"
+  },
+  "packageFiles": 39,
+  "archiveMatchesSourceWithNormalizedLineEndings": true,
+  "preflight": "202 Accepted, exit 0",
+  "publication": "200 OK, exit 0",
+  "cleanSource": {
+    "archiveSource": "7415b75b5c4e71f2d88c45395e482ef1656ed9fa",
+    "archiveSha256": "5f23a46ba104dfe215645ff107368d737be6b682986fd4697e3165a6c8688c03",
+    "archiveFiles": 42,
+    "verification": {
+      "status": "passed",
+      "sourceCommit": null,
+      "recordedAt": "2026-11-23T13:17:53.850Z",
+      "toolchain": {
+        "moonbit_install_version": "0.10.18+6c83a7f62",
+        "moon": "0.1.20261028",
+        "moonc": "v0.10.18+6c83a7f62",
+        "node_tested": "24.14.0",
+        "backend": "js"
+      },
+      "reports": [
+        {
+          "mode": "debug",
+          "unitTests": "Total tests: 3, passed: 3, failed: 0.",
+          "cliSha256": "0313e17c34334906494b9772e95da91710f727be27f696996a565892b47a877f",
+          "intervalModels": 132,
+          "crossing": 10,
+          "traceErrors": 10,
+          "ruleErrors": 4,
+          "eventCap": 4096
+        },
+        {
+          "mode": "release",
+          "unitTests": "Total tests: 3, passed: 3, failed: 0.",
+          "cliSha256": "8151b40b279986e0b2e22de8e66b6b4a15c123c326935c644dcda2a97a1ce51d",
+          "intervalModels": 132,
+          "crossing": 10,
+          "traceErrors": 10,
+          "ruleErrors": 4,
+          "eventCap": 4096
+        }
+      ]
+    },
+    "powershell": "passed"
+  },
+  "packageExtraction": {
+    "status": "passed",
+    "sourceCommit": null,
+    "recordedAt": "2026-11-23T13:22:28.131Z",
+    "toolchain": {
+      "moonbit_install_version": "0.10.18+6c83a7f62",
+      "moon": "0.1.20261028",
+      "moonc": "v0.10.18+6c83a7f62",
+      "node_tested": "24.14.0",
+      "backend": "js"
+    },
+    "reports": [
+      {
+        "mode": "debug",
+        "unitTests": "Total tests: 3, passed: 3, failed: 0.",
+        "cliSha256": "0313e17c34334906494b9772e95da91710f727be27f696996a565892b47a877f",
+        "intervalModels": 132,
+        "crossing": 10,
+        "traceErrors": 10,
+        "ruleErrors": 4,
+        "eventCap": 4096
+      },
+      {
+        "mode": "release",
+        "unitTests": "Total tests: 3, passed: 3, failed: 0.",
+        "cliSha256": "8151b40b279986e0b2e22de8e66b6b4a15c123c326935c644dcda2a97a1ce51d",
+        "intervalModels": 132,
+        "crossing": 10,
+        "traceErrors": 10,
+        "ruleErrors": 4,
+        "eventCap": 4096
+      }
+    ]
+  },
+  "powershell": "passed",
+  "ci": {
+    "run": 45183075865,
+    "windows": "success",
+    "ubuntu": "success"
+  },
+  "publicPageHttpStatus": 200,
+  "registryConsumer": {
+    "verifiedAt": "2026-11-23T13:25:10.866770+00:00",
+    "freshCache": true,
+    "registryCredentials": false,
+    "workspaceOverride": false,
+    "modes": [
+      "debug",
+      "release"
+    ],
+    "zipSha256": "098a9801d22dcca6e63b809e6c0756ce6d644b5104bb3a01d7977efbfb4cc1a3",
+    "allFilesMatch": true,
+    "output": [
+      "debug",
+      "PASS installed TraceGate 0.1.0: nested time and baseline budget",
+      "release",
+      "PASS installed TraceGate 0.1.0: nested time and baseline budget"
+    ]
+  }
+}

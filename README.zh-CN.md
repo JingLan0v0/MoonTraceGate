@@ -23,5 +23,7 @@
 `check_budget`，完整示例位于 `examples/library`。自身耗时指区间扣除同线程直接
 子区间后的墙钟时间。各线程的聚合可相加，含义是累计区间耗时。
 
-当前源码版本为 0.1.0。验收使用 `node scripts/verify.mjs`，Windows 包装检查使用
+已发布 [Mooncakes 0.1.0](https://mooncakes.io/docs/JingLan0v0/tracegate@0.1.0)。
+在使用方项目执行 `moon add JingLan0v0/tracegate@0.1.0`，并在 `moon.pkg` 导入
+`JingLan0v0/tracegate`。验收使用 `node scripts/verify.mjs`，Windows 包装检查使用
 `./scripts/powershell-smoke.ps1`。实际结果见 [验收记录](docs/acceptance.md)。
