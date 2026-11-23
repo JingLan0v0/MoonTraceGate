@@ -1,0 +1,15 @@
+[
+  {
+    "cat": "build",
+    "name": "pipeline",
+    "metric": "self_ns",
+    "limit_ns": 4000,
+    "max_growth_ns": 2000
+  },
+  {
+    "cat": "build",
+    "name": "parse",
+    "metric": "max_ns",
+    "limit_ns": 9000
+  }
+]

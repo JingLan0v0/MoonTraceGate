@@ -1,0 +1,45 @@
+{
+  "traceEvents": [
+    {
+      "ph": "M",
+      "pid": 10,
+      "tid": 2,
+      "name": "thread_name",
+      "args": {
+        "name": "build worker"
+      }
+    },
+    {
+      "ph": "B",
+      "pid": 10,
+      "tid": 2,
+      "ts": 0,
+      "cat": "build",
+      "name": "pipeline"
+    },
+    {
+      "ph": "X",
+      "pid": 10,
+      "tid": 2,
+      "ts": 1,
+      "cat": "build",
+      "name": "parse",
+      "dur": 6
+    },
+    {
+      "ph": "X",
+      "pid": 10,
+      "tid": 2,
+      "ts": 8,
+      "cat": "build",
+      "name": "emit",
+      "dur": 2
+    },
+    {
+      "ph": "E",
+      "pid": 10,
+      "tid": 2,
+      "ts": 10
+    }
+  ]
+}

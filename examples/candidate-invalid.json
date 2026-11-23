@@ -1,0 +1,12 @@
+{
+  "traceEvents": [
+    {
+      "ph": "B",
+      "pid": 10,
+      "tid": 2,
+      "ts": 0,
+      "cat": "build",
+      "name": "pipeline"
+    }
+  ]
+}
