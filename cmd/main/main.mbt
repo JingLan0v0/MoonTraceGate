@@ -1,5 +1,6 @@
 ///|
 let usage : String = "Usage: moon-tracegate <baseline.json> <candidate.json> <rules.json>\n" +
+  "       moon-tracegate --series <baseline-series.json> <candidate-series.json> <policy.json>\n" +
   "Use - for at most one file to read standard input. Exit 0 pass, 1 budget failure, 2 invalid input.\n"
 
 ///|
@@ -38,7 +39,8 @@ fn main {
     write_stdout(@tracegate.version() + "\n")
     return
   }
-  if args.length() != 3 {
+  let series = args.length() == 4 && args[0] == "--series"
+  if args.length() != 3 && !series {
     write_stderr(usage)
     set_exit(2)
     return
@@ -55,9 +57,17 @@ fn main {
     return
   }
   try {
-    let a = load_profile(args[0], "baseline")
-    let b = load_profile(args[1], "candidate")
-    let report = @tracegate.check_budget(a, b, read(args[2], "rules"))
+    let report = if series {
+      @tracegate.check_series(
+        read(args[1], "baseline"),
+        read(args[2], "candidate"),
+        read(args[3], "series policy"),
+      )
+    } else {
+      let a = load_profile(args[0], "baseline")
+      let b = load_profile(args[1], "candidate")
+      @tracegate.check_budget(a, b, read(args[2], "rules"))
+    }
     write_stdout(report.stringify() + "\n")
     if report is Object(obj) && obj.get("status") == Some(Json::string("fail")) {
       set_exit(1)

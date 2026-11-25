@@ -80,6 +80,69 @@ fn number(n : Int64?) -> Json {
 }
 
 ///|
+fn read_rules(rules : Json) -> Array[Rule] raise TraceError {
+  guard rules is Array(values) && values.length() > 0 && values.length() <= 64 else {
+    raise TraceError("invalid_input", "expected an array of 1..64 budget rules")
+  }
+  let seen : Map[(String, String, String), Bool] = Map([])
+  values.map(value => {
+    let rule = read_rule(value)
+    let key = (rule.cat, rule.name, rule.metric)
+    if seen.contains(key) {
+      raise TraceError("invalid_input", "duplicate budget rule")
+    }
+    seen[key] = true
+    rule
+  })
+}
+
+///|
+fn rule_measurement(profile : Profile, rule : Rule) -> Int64? {
+  profile.lookup(rule.cat, rule.name).map(s => measure(s, rule.value))
+}
+
+///|
+fn budget_result(
+  rule : Rule,
+  base : Int64?,
+  current : Int64?,
+) -> (Map[String, Json], Bool) {
+  let delta = match (base, current) {
+    (Some(a), Some(b)) => Some(b - a)
+    _ => None
+  }
+  let reasons : Array[Json] = []
+  if current is None {
+    reasons.push(Json::string("missing_candidate"))
+  }
+  if rule.max_growth_ns is Some(limit) {
+    if base is None {
+      reasons.push(Json::string("missing_baseline"))
+    }
+    if delta is Some(growth) && growth > limit {
+      reasons.push(Json::string("growth_limit"))
+    }
+  }
+  if rule.limit_ns is Some(limit) &&
+    current is Some(measured) &&
+    measured > limit {
+    reasons.push(Json::string("absolute_limit"))
+  }
+  let values = Map([
+    ("cat", Json::string(rule.cat)),
+    ("name", Json::string(rule.name)),
+    ("metric", Json::string(rule.metric)),
+    ("baseline_ns", number(base)),
+    ("candidate_ns", number(current)),
+    ("delta_ns", number(delta)),
+    ("limit_ns", number(rule.limit_ns)),
+    ("max_growth_ns", number(rule.max_growth_ns)),
+    ("reasons", Json::array(reasons)),
+  ])
+  (values, reasons.is_empty())
+}
+
+///|
 /// Compare profiles with 1..64 JSON rules. Missing measurements fail the affected
 /// rule. An absolute-only rule may target an event that is new in the candidate.
 pub fn check_budget(
@@ -87,61 +150,13 @@ pub fn check_budget(
   candidate : Profile,
   rules : Json,
 ) -> Json raise TraceError {
-  guard rules is Array(values) && values.length() > 0 && values.length() <= 64 else {
-    raise TraceError("invalid_input", "expected an array of 1..64 budget rules")
-  }
-  let seen : Map[(String, String, String), Bool] = Map([])
   let mut passed = true
-  let reports = values.map(value => {
-    let rule = read_rule(value)
-    let key = (rule.cat, rule.name, rule.metric)
-    if seen.contains(key) {
-      raise TraceError("invalid_input", "duplicate budget rule")
-    }
-    seen[key] = true
-    let base = baseline
-      .lookup(rule.cat, rule.name)
-      .map(s => measure(s, rule.value))
-    let current = candidate
-      .lookup(rule.cat, rule.name)
-      .map(s => measure(s, rule.value))
-    let delta = match (base, current) {
-      (Some(a), Some(b)) => Some(b - a)
-      _ => None
-    }
-    let reasons : Array[Json] = []
-    if current is None {
-      reasons.push(Json::string("missing_candidate"))
-    }
-    if rule.max_growth_ns is Some(limit) {
-      if base is None {
-        reasons.push(Json::string("missing_baseline"))
-      }
-      if delta is Some(growth) && growth > limit {
-        reasons.push(Json::string("growth_limit"))
-      }
-    }
-    if rule.limit_ns is Some(limit) &&
-      current is Some(measured) &&
-      measured > limit {
-      reasons.push(Json::string("absolute_limit"))
-    }
-    if !reasons.is_empty() {
-      passed = false
-    }
-    Json::object(
-      Map([
-        ("cat", Json::string(rule.cat)),
-        ("name", Json::string(rule.name)),
-        ("metric", Json::string(rule.metric)),
-        ("baseline_ns", number(base)),
-        ("candidate_ns", number(current)),
-        ("delta_ns", number(delta)),
-        ("limit_ns", number(rule.limit_ns)),
-        ("max_growth_ns", number(rule.max_growth_ns)),
-        ("reasons", Json::array(reasons)),
-      ]),
-    )
+  let reports = read_rules(rules).map(rule => {
+    let base = rule_measurement(baseline, rule)
+    let current = rule_measurement(candidate, rule)
+    let (record, ok) = budget_result(rule, base, current)
+    passed = passed && ok
+    Json::object(record)
   })
   Json::object(
     Map([

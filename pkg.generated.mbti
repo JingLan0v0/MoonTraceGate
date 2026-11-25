@@ -4,6 +4,8 @@ package "JingLan0v0/tracegate"
 // Values
 pub fn check_budget(Profile, Profile, Json) -> Json raise TraceError
 
+pub fn check_series(Json, Json, Json) -> Json raise TraceError
+
 pub fn parse_json(String) -> Json raise TraceError
 
 pub fn profile(Json) -> Profile raise TraceError

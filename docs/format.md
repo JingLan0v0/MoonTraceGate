@@ -49,3 +49,23 @@ text parsing also caps UTF-16 units to 1 Mi, nesting to 16, raw string scanner t
 keys are rejected. Each trace contains at most 4,096 events. The library profile
 entry takes parsed JSON and applies the event limits independently. No network
 access is performed by the CLI.
+
+## Multi-run gate
+
+Invoke the CLI with --series, followed by the paths to the baseline array,
+candidate array and policy object. Each array has 3 to 32 traces. A policy has
+the required rules array and an optional integer percentile in 1..100
+(default 50). The library provides check_series with the same JSON objects.
+
+For each rule, compute its metric once per capture. Select the nearest rank
+ceil(percentile * sample count / 100) independently on each side, then apply
+the existing budget to those two measurements. Thus p50 uses the lower
+middle value for an even number of captures. With fewer than 20 captures,
+p95 selects the largest measurement. The report preserves the sample input
+order, including null for a missing measurement. A missing candidate in any
+sample fails the rule. A missing baseline in any sample fails a growth rule.
+An absolute-only rule can still check a complete candidate series. Invalid
+traces abort the report and name the affected one-based sample number.
+
+Use comparable workload, instrumentation and conditions across captures.
+The gate compares the observed sample distributions.
