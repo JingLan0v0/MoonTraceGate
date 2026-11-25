@@ -1,17 +1,10 @@
-# 0.2.0 revision
-
-The revision corrects fractional time normalization and adds multi-run
-percentile budgets. The demo and independent oracle cover stable and tail
-decisions, missing samples and malformed input. See CHANGELOG.md and
-docs/format.md for behavior and limits. Publication evidence will be added
-after exact-source CI, archive checks and a fresh consumer.
-
 # Delivery state
 
-MoonTraceGate 0.1.0 is published as JingLan0v0/tracegate. Original development
-history is on https://github.com/JingLan0v0/MoonTraceGate . Release source
-`54e05f09a6a44460a6db0f6834286007561889cc` passed Windows/Ubuntu CI, archive extraction and fresh registry
-consumer checks. See acceptance.md and publication-0.1.0.json.
+Version 0.2.0 is published as JingLan0v0/tracegate from `b1603accb19cefcf8473e97c0aeaf643f4903a75`.
+The revision corrected fractional endpoints and added multi-run percentile
+budgets, sample reporting and verification. Both operating-system CI jobs,
+the actual package extraction and the fresh registry installation passed.
+See acceptance.md and publication-0.2.0.json for exact evidence.
+The previous 0.1.0 release remains recorded in acceptance.md.
 
-The desktop project and one-page application are ready. Organizer assessment
-and any form submission are tracked separately in competition.md.
+The revised proposal is available on the user's desktop.

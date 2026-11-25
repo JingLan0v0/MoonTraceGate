@@ -1,0 +1,99 @@
+{
+  "version": "0.2.0",
+  "sourceCommit": "b1603accb19cefcf8473e97c0aeaf643f4903a75",
+  "registryEntry": {
+    "name": "JingLan0v0/tracegate",
+    "readme": "README.md",
+    "yanked": false,
+    "license": "Apache-2.0",
+    "version": "0.2.0",
+    "checksum": "6f4cf297df2ea3f4acd319ab9e4ec27065bb6ae90dd532e101e29fd00b3b67e3",
+    "keywords": [
+      "tracing",
+      "performance",
+      "regression",
+      "cli"
+    ],
+    "created_at": "2026-11-25T10:11:02.444713+00:00",
+    "repository": "https://github.com/JingLan0v0/MoonTraceGate",
+    "description": "Check performance regression budgets from nested Chrome Trace JSON duration events.",
+    "yanked_reason": null,
+    "preferred-target": "js",
+    "supported-targets": "js"
+  },
+  "packageFiles": 49,
+  "preflight": "202 Accepted, exit 0",
+  "publication": "200 OK, exit 0",
+  "packageExtraction": {
+    "status": "passed",
+    "sourceCommit": null,
+    "recordedAt": "2026-11-25T10:10:34.805Z",
+    "toolchain": {
+      "moonbit_install_version": "0.10.18+6c83a7f62",
+      "moon": "0.1.20261028",
+      "moonc": "v0.10.18+6c83a7f62",
+      "node_tested": "24.14.0",
+      "backend": "js"
+    },
+    "reports": [
+      {
+        "mode": "debug",
+        "unitTests": "Total tests: 9, passed: 9, failed: 0.",
+        "cliSha256": "a33793ec3f96591b84e810f1b87f32c2a170b47128c23303caedc7f630e9840a",
+        "intervalModels": 132,
+        "crossing": 10,
+        "traceErrors": 10,
+        "ruleErrors": 4,
+        "eventCap": 4096,
+        "seriesComparisons": 40,
+        "invalidSeriesCases": 6
+      },
+      {
+        "mode": "release",
+        "unitTests": "Total tests: 9, passed: 9, failed: 0.",
+        "cliSha256": "69ae6c2fdaded17b4f42e1271fc504315679afa1d9ccd42915fa11b841c3aa67",
+        "intervalModels": 132,
+        "crossing": 10,
+        "traceErrors": 10,
+        "ruleErrors": 4,
+        "eventCap": 4096,
+        "seriesComparisons": 40,
+        "invalidSeriesCases": 6
+      }
+    ]
+  },
+  "powershell": "passed",
+  "legacyComparison": {
+    "version": "0.1.0",
+    "fixtures": [
+      "candidate-pass",
+      "candidate-regression",
+      "candidate-invalid"
+    ],
+    "byteIdentical": true
+  },
+  "ci": {
+    "run": 45592206681,
+    "windows": "success",
+    "ubuntu": "success"
+  },
+  "publicPageHttpStatus": 200,
+  "consumer": {
+    "verifiedAt": "2026-11-25T10:12:39.006092+00:00",
+    "freshCache": true,
+    "modes": [
+      "debug",
+      "release"
+    ],
+    "workspaceOverride": false,
+    "registryCredentials": false,
+    "zipSha256": "6f4cf297df2ea3f4acd319ab9e4ec27065bb6ae90dd532e101e29fd00b3b67e3",
+    "allFilesMatch": true,
+    "output": [
+      "debug",
+      "PASS installed TraceGate 0.2.0: endpoint rounding and multi-run p95",
+      "release",
+      "PASS installed TraceGate 0.2.0: endpoint rounding and multi-run p95"
+    ]
+  }
+}

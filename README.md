@@ -14,7 +14,7 @@ the repository root run:
 
     node examples/demo.mjs
 
-The command builds the release CLI and asserts four paths: allow, block,
+The command builds the release CLI and asserts the single-run paths: allow, block,
 reject an incomplete trace, and replay a newly recorded Node workload.
 Synthetic fixtures give stable expected values. The measured workload varies
 by machine; its self-comparison must always have a zero delta.
@@ -34,10 +34,10 @@ See [input and report details](docs/format.md). Generate a trace locally via
 `node examples/capture.mjs capture.json` or run the public library sample
 `moon run examples/library --target js`.
 
-Install the verified [Mooncakes 0.1.0 release](https://mooncakes.io/docs/JingLan0v0/tracegate@0.1.0)
+Install the verified [Mooncakes 0.2.0 release](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.0)
 in your MoonBit project with:
 
-    moon add JingLan0v0/tracegate@0.1.0
+    moon add JingLan0v0/tracegate@0.2.0
 
 Import `JingLan0v0/tracegate` in `moon.pkg`. The source checkout includes
 `examples/library` as a runnable starting point.

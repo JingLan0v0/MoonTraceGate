@@ -1,5 +1,31 @@
 # Acceptance evidence
 
+## Mooncakes 0.2.0
+
+Published from `b1603accb19cefcf8473e97c0aeaf643f4903a75` at 2026-11-25T10:11:02.444713+00:00.
+[Release CI](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/45592206681)
+succeeded on Windows and Ubuntu for this SHA. Actual archive extraction
+verification completed at 2026-11-25T10:10:34.805Z. Each mode passed 9 unit
+tests, 132 independent interval models and 40 independent percentile
+comparisons. Both builds also passed all demos and malformed input checks.
+PowerShell verified stdin and absolute paths in both single and series mode.
+
+The 0.1.0 output matched byte for byte for the three previous CLI fixtures,
+including the diagnostics and exit codes. Fractional regression tests
+reproduced inconsistent X and B/E metrics and hidden invalid intervals before
+the fixes. A separate test reproduced a false crossing from decimal addition.
+The fixed implementation validates integer picosecond endpoints and rounds
+for measurement afterward.
+
+Preflight returned `202 Accepted` and publication returned `200 OK`. The
+49-file publisher ZIP matched the Git source after newline normalization.
+The public registry ZIP and all 49 files installed into a fresh consumer
+matched it. SHA-256 is `6f4cf297df2ea3f4acd319ab9e4ec27065bb6ae90dd532e101e29fd00b3b67e3`. The exact-version consumer verified
+fractional endpoint rounding and multi-run p95 outcomes in debug and release.
+
+[Registry version](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.0) ·
+[Machine-readable release receipt](publication-0.2.0.json)
+
 ## Mooncakes 0.1.0
 
 Published from `54e05f09a6a44460a6db0f6834286007561889cc` at 2026-11-23T13:23:01.429050+00:00.
