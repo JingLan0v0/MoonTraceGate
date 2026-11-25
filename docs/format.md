@@ -10,17 +10,17 @@ or an object with a traceEvents array. Additional trace metadata is ignored.
 | --- | --- |
 | ph | B opens, E closes one span per process/thread, X specifies a complete duration. Other phase strings are counted as skipped. |
 | pid, tid | Nonnegative integers up to 2,147,483,647 for B, E and X. |
-| ts | Nonnegative microseconds up to 10^12. Fractional values are rounded to nearest ns. Use relative timestamps for larger origins. |
-| dur | X duration in microseconds, up to 10^9, rounded independently to nearest ns. B/E spans have the same duration bound. |
+| ts | Nonnegative microseconds up to 10^12. Endpoints are rounded to nearest ns for metrics. Use relative timestamps for larger origins. |
+| dur | X duration in microseconds, up to 10^9, added to the start before endpoint rounding. B/E spans have the same duration bound. |
 | cat, name | Exact case-sensitive grouping key. Missing cat becomes an empty string. Names on B/X are required and nonempty. Optional nonempty E labels must match the open span. Both strings are capped at 128 UTF-16 units. |
 
-Events on a track are ordered by quantized timestamp and original source order
+Events on a track are ordered by source timestamp and original source order
 for ties. Closed spans on one track must nest or be disjoint. Same starts put
 longer spans first; identical positive spans nest by original source order.
 Zero-length spans count toward their group and contribute zero time. They do
 not alter nonzero containment. A span is half-open, so touching spans can be
 siblings. Cross-thread boundaries never subtract time from each other.
-Crossing or unpaired spans produce an error. Async/flow and counter semantics
+Crossing or unpaired spans produce an error before rounding. Async/flow and counter semantics
 are outside this duration subset. A name missing from supported events fails
 its budget check when the name is required.
 

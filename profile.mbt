@@ -4,8 +4,8 @@ priv struct Span {
   tid : Int64
   cat : String
   name : String
-  start : Int64
-  stop : Int64
+  start : Double
+  stop : Double
   index : Int32
 }
 
@@ -13,7 +13,7 @@ priv struct Span {
 priv enum Phase {
   Begin
   End
-  Complete(Int64)
+  Complete(Double)
 }
 
 ///|
@@ -96,7 +96,7 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
     cat,
     name,
     start: micros(required(obj, "ts"), "ts", 1000000000000.0),
-    stop: 0L,
+    stop: 0.0,
     index,
   }
   Some({ span, phase, })
@@ -130,7 +130,7 @@ fn collect_spans(events : Array[Event]) -> Array[Span] raise TraceError {
           (s.cat != "" && s.cat != begin.cat) {
           raise trace_error(s, "end label differs from its open span")
         }
-        if s.start - begin.start > 1000000000000L {
+        if s.start - begin.start > 1000000000.0 {
           raise trace_error(
             begin, "span duration exceeds 1000000000 microseconds",
           )
@@ -152,12 +152,17 @@ priv struct Frame {
 }
 
 ///|
+fn span_ns(span : Span) -> Int64 {
+  endpoint_ns(span.stop) - endpoint_ns(span.start)
+}
+
+///|
 fn finish_span(
   totals : Map[(String, String), SpanStats],
   frame : Frame,
 ) -> Unit {
   let span = frame.span
-  let dur = span.stop - span.start
+  let dur = span_ns(span)
   let key = (span.cat, span.name)
   let prior = totals
     .get(key)
@@ -191,8 +196,7 @@ fn attribute(
   let stack : Array[Frame] = []
   let totals : Map[(String, String), SpanStats] = Map([])
   for span in spans {
-    let duration = span.stop - span.start
-    if duration == 0L {
+    if span.stop == span.start {
       finish_span(totals, { span, children_ns: 0L, })
       continue
     }
@@ -205,7 +209,7 @@ fn attribute(
       if span.stop > parent.span.stop {
         raise trace_error(span, "crossing duration spans on the same thread")
       }
-      parent.children_ns += duration
+      parent.children_ns += span_ns(span)
     }
     stack.push({ span, children_ns: 0L, })
   }

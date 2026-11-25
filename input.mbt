@@ -42,14 +42,19 @@ fn micros(
   value : Json,
   field : String,
   limit : Double,
-) -> Int64 raise TraceError {
+) -> Double raise TraceError {
   guard value is Number(n, ..) && n >= 0.0 && n <= limit else {
     raise TraceError(
       "invalid_trace",
       field + " must be bounded nonnegative microseconds",
     )
   }
-  (n * 1000.0).round().to_int64()
+  n
+}
+
+///|
+fn endpoint_ns(us : Double) -> Int64 {
+  (us * 1000.0).round().to_int64()
 }
 
 ///|
