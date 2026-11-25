@@ -4,8 +4,8 @@ priv struct Span {
   tid : Int64
   cat : String
   name : String
-  start : Double
-  stop : Double
+  start : Int64
+  stop : Int64
   index : Int32
 }
 
@@ -13,7 +13,7 @@ priv struct Span {
 priv enum Phase {
   Begin
   End
-  Complete(Double)
+  Complete(Int64)
 }
 
 ///|
@@ -76,7 +76,7 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
   let phase = match ph {
     "B" => Begin
     "E" => End
-    "X" => Complete(micros(required(obj, "dur"), "dur", 1000000000.0))
+    "X" => Complete(picoseconds(required(obj, "dur"), "dur", 1000000000.0))
     _ => return None
   }
   let cat = match obj.get("cat") {
@@ -95,8 +95,8 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
     tid: integer(required(obj, "tid"), "tid", 2147483647.0),
     cat,
     name,
-    start: micros(required(obj, "ts"), "ts", 1000000000000.0),
-    stop: 0.0,
+    start: picoseconds(required(obj, "ts"), "ts", 1000000000000.0),
+    stop: 0L,
     index,
   }
   Some({ span, phase, })
@@ -130,7 +130,7 @@ fn collect_spans(events : Array[Event]) -> Array[Span] raise TraceError {
           (s.cat != "" && s.cat != begin.cat) {
           raise trace_error(s, "end label differs from its open span")
         }
-        if s.start - begin.start > 1000000000.0 {
+        if s.start - begin.start > 1000000000000000L {
           raise trace_error(
             begin, "span duration exceeds 1000000000 microseconds",
           )

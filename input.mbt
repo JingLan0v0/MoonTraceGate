@@ -38,23 +38,25 @@ fn integer(
 }
 
 ///|
-fn micros(
+fn picoseconds(
   value : Json,
   field : String,
   limit : Double,
-) -> Double raise TraceError {
+) -> Int64 raise TraceError {
   guard value is Number(n, ..) && n >= 0.0 && n <= limit else {
     raise TraceError(
       "invalid_trace",
       field + " must be bounded nonnegative microseconds",
     )
   }
-  n
+  // Keep whole microseconds exact even at the top of the timestamp range.
+  let whole = n.floor()
+  whole.to_int64() * 1000000L + ((n - whole) * 1000000.0).round().to_int64()
 }
 
 ///|
-fn endpoint_ns(us : Double) -> Int64 {
-  (us * 1000.0).round().to_int64()
+fn endpoint_ns(ps : Int64) -> Int64 {
+  (ps + 500L) / 1000L
 }
 
 ///|

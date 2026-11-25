@@ -83,3 +83,14 @@ test "crossing spans are rejected before endpoint rounding" {
     _ => fail("crossing spans accepted")
   }
 }
+
+///|
+test "decimal X endpoint can coincide with its B/E parent" {
+  let input =
+    #|[{"ph":"B","pid":1,"tid":1,"name":"parent","ts":0},{"ph":"X","pid":1,"tid":1,"name":"child","ts":0.1,"dur":0.2},{"ph":"E","pid":1,"tid":1,"ts":0.3}]
+  let profile = @tracegate.profile(@tracegate.parse_json(input))
+  guard profile.lookup("", "parent") is Some(parent) else {
+    fail("missing parent")
+  }
+  assert_eq(parent.self_ns, 100L)
+}
