@@ -11,6 +11,13 @@ try {
   if ($LASTEXITCODE -ne 0 -or ($output | ConvertFrom-Json).status -ne 'pass') {
     throw 'Pipeline failed to supply the budget to TraceGate'
   }
+  $seriesBase = Join-Path $root 'examples/series-baseline.json'
+  $seriesNext = Join-Path $root 'examples/series-candidate.json'
+  $policy = Get-Content -LiteralPath (Join-Path $root 'examples/series-p50.json') -Raw
+  $series = $policy | & $moon run cmd/main --target js -- --series $seriesBase $seriesNext -
+  if ($LASTEXITCODE -ne 0 -or ($series | ConvertFrom-Json).rules[0].candidate_ns -ne 2000) {
+    throw 'Pipeline failed to supply the series policy'
+  }
   if ((Get-Location).Path -ne $original) { throw 'Wrapper did not restore caller directory' }
 } finally { Pop-Location }
 Write-Output 'PASS PowerShell wrapper, stdin and absolute paths'

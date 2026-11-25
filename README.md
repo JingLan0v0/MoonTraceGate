@@ -42,6 +42,18 @@ in your MoonBit project with:
 Import `JingLan0v0/tracegate` in `moon.pkg`. The source checkout includes
 `examples/library` as a runnable starting point.
 
+## Multiple captures
+
+Version 0.2.0 compares 3 to 32 captures per side. Each rule measures every
+capture, then compares nearest-rank percentiles. The report preserves the
+individual measurements so a missing event or a tail spike is visible.
+
+    moon run cmd/main --target js -- --series examples/series-baseline.json examples/series-candidate.json examples/series-p50.json
+
+Run the same command with series-p95.json to block the spike in this
+fixture. The main demo exercises both policies, missing samples and a
+three-capture run of the real Node workload. See [series semantics](docs/format.md#multi-run-gate).
+
 ## Verification
 
     node scripts/verify.mjs

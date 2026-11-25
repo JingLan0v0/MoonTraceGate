@@ -1,3 +1,11 @@
+# 0.2.0 revision
+
+The revision corrects fractional time normalization and adds multi-run
+percentile budgets. The demo and independent oracle cover stable and tail
+decisions, missing samples and malformed input. See CHANGELOG.md and
+docs/format.md for behavior and limits. Publication evidence will be added
+after exact-source CI, archive checks and a fresh consumer.
+
 # Delivery state
 
 MoonTraceGate 0.1.0 is published as JingLan0v0/tracegate. Original development

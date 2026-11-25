@@ -1,0 +1,83 @@
+[
+  {
+    "traceEvents": [
+      {
+        "ph": "B",
+        "name": "pipeline",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0
+      },
+      {
+        "ph": "X",
+        "name": "worker",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0,
+        "dur": 8
+      },
+      {
+        "ph": "E",
+        "pid": 1,
+        "tid": 1,
+        "ts": 10
+      }
+    ]
+  },
+  {
+    "traceEvents": [
+      {
+        "ph": "B",
+        "name": "pipeline",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0
+      },
+      {
+        "ph": "X",
+        "name": "worker",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0,
+        "dur": 8
+      },
+      {
+        "ph": "E",
+        "pid": 1,
+        "tid": 1,
+        "ts": 10
+      }
+    ]
+  },
+  {
+    "traceEvents": [
+      {
+        "ph": "B",
+        "name": "pipeline",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0
+      },
+      {
+        "ph": "X",
+        "name": "worker",
+        "cat": "build",
+        "pid": 1,
+        "tid": 1,
+        "ts": 0,
+        "dur": 8
+      },
+      {
+        "ph": "E",
+        "pid": 1,
+        "tid": 1,
+        "ts": 10
+      }
+    ]
+  }
+]

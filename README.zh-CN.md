@@ -23,6 +23,11 @@
 `check_budget`，完整示例位于 `examples/library`。自身耗时指区间扣除同线程直接
 子区间后的墙钟时间。各线程的聚合可相加，含义是累计区间耗时。
 
+**多次采样。** 0.2.0 支持同一工作负载每侧 3 至 32 次追踪，报告会保留每次测量。
+固定样例在 p50 下放行，在 p95 下拦截尖峰。候选样本缺少关键事件会单独暴露。
+直接运行 `node examples/demo.mjs` 即可核对上述结果和三次实际采集。
+详见[多次采样规则](docs/format.md#multi-run-gate)。
+
 已发布 [Mooncakes 0.1.0](https://mooncakes.io/docs/JingLan0v0/tracegate@0.1.0)。
 在使用方项目执行 `moon add JingLan0v0/tracegate@0.1.0`，并在 `moon.pkg` 导入
 `JingLan0v0/tracegate`。验收使用 `node scripts/verify.mjs`，Windows 包装检查使用

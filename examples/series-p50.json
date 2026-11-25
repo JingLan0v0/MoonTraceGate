@@ -1,0 +1,11 @@
+{
+  "percentile": 50,
+  "rules": [
+    {
+      "name": "pipeline",
+      "cat": "build",
+      "metric": "self_ns",
+      "max_growth_ns": 2000
+    }
+  ]
+}

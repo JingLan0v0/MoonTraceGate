@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {buildCli, checked, invoke, moonRun, root} from './tooling.mjs';
-import {checkDemo} from '../examples/demo.mjs';
+import {checkDemo, checkSeriesDemo} from '../examples/demo.mjs';
+import {verifySeries} from './verify-series.mjs';
 
 const receipt = path.join(root, '_build/verification-summary.json');
 fs.mkdirSync(path.dirname(receipt), {recursive: true});
@@ -164,7 +165,7 @@ function verifyBoundaries(cli, mode) {
     assert.equal(r.stdout, '');
   }
   assert.equal(invoke(cli, ['-', '-', rules], '').status, 2);
-  assert.equal(invoke(cli, ['--version'], '').stdout.trim(), '0.1.0');
+  assert.equal(invoke(cli, ['--version'], '').stdout.trim(), '0.2.0');
   assert.match(invoke(cli, ['--help'], '').stdout, /moon-tracegate/);
   const fd = fs.openSync(path.join(root, 'moon.mod'), 'r');
   try {
@@ -192,11 +193,13 @@ for (const mode of ['debug', 'release']) {
   assert.match(moonRun(['run', 'examples/library', '--target', 'js', '--deny-warn', ...flag]), /PASS public API/);
   const cli = buildCli(mode);
   checkDemo(cli);
+  checkSeriesDemo(cli);
   reports.push({
     mode, unitTests,
     cliSha256: createHash('sha256').update(fs.readFileSync(cli)).digest('hex'),
     ...verifyAttribution(cli, mode),
     ...verifyBoundaries(cli, mode),
+    ...verifySeries(cli, mode),
   });
 }
 verifyCiCommit();

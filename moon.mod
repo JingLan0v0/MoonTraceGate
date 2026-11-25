@@ -1,6 +1,6 @@
 name = "JingLan0v0/tracegate"
 
-version = "0.1.0"
+version = "0.2.0"
 
 repository = "https://github.com/JingLan0v0/MoonTraceGate"
 
