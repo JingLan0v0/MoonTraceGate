@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 — 2026-11-26
 
 - Reject fractional JSON spellings that round to an integer in budget limits,
   series percentiles and trace lane IDs.

@@ -165,7 +165,7 @@ function verifyBoundaries(cli, mode) {
     assert.equal(r.stdout, '');
   }
   assert.equal(invoke(cli, ['-', '-', rules], '').status, 2);
-  assert.equal(invoke(cli, ['--version'], '').stdout.trim(), '0.2.0');
+  assert.equal(invoke(cli, ['--version'], '').stdout.trim(), '0.2.1');
   assert.match(invoke(cli, ['--help'], '').stdout, /moon-tracegate/);
   const fd = fs.openSync(path.join(root, 'moon.mod'), 'r');
   try {
