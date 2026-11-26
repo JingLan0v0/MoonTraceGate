@@ -28,13 +28,21 @@ fn integer(
   field : String,
   limit : Double,
 ) -> Int64 raise TraceError {
-  guard value is Number(n, ..) && n >= 0.0 && n <= limit && n.floor() == n else {
+  guard value is Number(n, repr~) && n >= 0.0 && n <= limit && n.floor() == n else {
     raise TraceError(
       "invalid_input",
       field + " must be a bounded nonnegative integer",
     )
   }
-  n.to_int64()
+  let decoded = n.to_int64()
+  if repr is Some(spelling) &&
+    exact_nonnegative_integer(spelling) != Some(decoded) {
+    raise TraceError(
+      "invalid_input",
+      field + " must be a bounded nonnegative integer",
+    )
+  }
+  decoded
 }
 
 ///|
@@ -106,7 +114,12 @@ pub fn parse_json(source : String) -> Json raise TraceError {
       }
     }
   }
-  @json.parse(source, max_nesting_depth=16, reject_duplicate_keys=true) catch {
+  @json.parse(
+    source,
+    max_nesting_depth=16,
+    reject_duplicate_keys=true,
+    preserve_number_repr=true,
+  ) catch {
     _ => raise TraceError("invalid_json", "invalid JSON text")
   }
 }

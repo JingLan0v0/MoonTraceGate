@@ -74,3 +74,42 @@ test "a missing candidate in any sample fails the rule" {
     Some(Json::array([Json::string("missing_candidate")])),
   )
 }
+
+///|
+test "text budgets reject decimals rounded to integers" {
+  guard traces([1]) is Array(samples) else { fail("expected trace sample") }
+  let p = @tracegate.profile(samples[0])
+  for
+    spelling in [
+      "1000.00000000000000001", "-1e-999", "9007199254740990.9", "9007199254740992",
+    ] {
+    let prefix = "[{\"name\":\"build\",\"metric\":\"total_ns\",\"limit_ns\":"
+    let rules = @tracegate.parse_json(prefix + spelling + "}]")
+    try @tracegate.check_budget(p, p, rules) |> ignore catch {
+      @tracegate.TraceError(code, _) => assert_eq(code, "invalid_input")
+    } noraise {
+      _ => fail("accepted \{spelling}")
+    }
+  }
+}
+
+///|
+test "series accepts exact decimal integers and rejects rounded percentiles" {
+  let input = traces([1, 1, 1])
+  let suffix =
+    #|,"rules":[{"name":"build","metric":"total_ns","limit_ns":10000e-1,"max_growth_ns":-0.000}]}
+  let valid = @tracegate.parse_json("{\"percentile\":5.0e1" + suffix)
+  guard @tracegate.check_series(input, input, valid) is Object(report) else {
+    fail("expected report")
+  }
+  assert_eq(report.get("status"), Some(Json::string("pass")))
+  assert_eq(report.get("percentile"), Some(Json::number(50.0)))
+  let invalid = @tracegate.parse_json(
+    "{\"percentile\":50.00000000000000001" + suffix,
+  )
+  try @tracegate.check_series(input, input, invalid) |> ignore catch {
+    @tracegate.TraceError(code, _) => assert_eq(code, "invalid_input")
+  } noraise {
+    _ => fail("accepted fractional percentile")
+  }
+}

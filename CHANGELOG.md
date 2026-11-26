@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Reject fractional JSON spellings that round to an integer in budget limits,
+  series percentiles and trace lane IDs.
+
 ## 0.2.0
 
 - Compare multiple trace captures by nearest-rank percentile. Retain all
