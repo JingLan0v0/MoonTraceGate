@@ -28,7 +28,7 @@
 直接运行 `node examples/demo.mjs` 即可核对上述结果和三次实际采集。
 详见[多次采样规则](docs/format.md#multi-run-gate)。
 
-已发布 [Mooncakes 0.2.0](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.0)。
-在使用方项目执行 `moon add JingLan0v0/tracegate@0.2.0`，并在 `moon.pkg` 导入
+已发布 [Mooncakes 0.2.1](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.1)。
+在使用方项目执行 `moon add JingLan0v0/tracegate@0.2.1`，并在 `moon.pkg` 导入
 `JingLan0v0/tracegate`。验收使用 `node scripts/verify.mjs`，Windows 包装检查使用
 `./scripts/powershell-smoke.ps1`。实际结果见 [验收记录](docs/acceptance.md)。

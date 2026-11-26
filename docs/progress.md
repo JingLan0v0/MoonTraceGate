@@ -1,3 +1,9 @@
+# MoonTraceGate 0.2.1 published - 2026-11-26
+
+Published from 9b4cc8af90c03f6db9bf0697480fc1dcd9836fcb. The public registry download
+and exact-version consumer were verified. See [acceptance](acceptance.md)
+for CI, archive and installation evidence.
+
 # Local validation fix — 2026-11-26
 
 Budget fields, series percentiles and lane IDs validate exact JSON integers

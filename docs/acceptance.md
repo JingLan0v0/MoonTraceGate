@@ -1,5 +1,23 @@
 # Acceptance evidence
 
+## Mooncakes 0.2.1 - 2026-11-26
+
+Release source: 9b4cc8af90c03f6db9bf0697480fc1dcd9836fcb. The [GitHub Actions run](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/45763268591) passed on
+Windows and Ubuntu for that commit. Full debug and release verification
+and PowerShell smoke passed on a clean extraction of the publisher ZIP.
+
+Mooncakes returned 202 Accepted for preflight and 200 OK for publication.
+The [public version page](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.1) returned HTTP 200. The
+[registry ZIP](https://download.mooncakes.io/user/JingLan0v0/tracegate/0.2.1.zip) SHA-256 equals the tested
+publisher ZIP and the public metadata checksum:
+05a5efca778d9be79dfd455e6c93a1253d4060a36a36f0ebe46cc0dc3db7bd4a
+
+An independent consumer installed JingLan0v0/tracegate@0.2.1 from the public
+registry using a fresh cache without credentials or a workspace override.
+All 51 installed files matched the publisher ZIP byte for byte.
+Both installed builds accepted an exact integral exponent and rejected a fractional budget that rounded to an integer in 0.2.0.
+Registry publication timestamp: 11/26/2026 14:16:11.
+
 ## Mooncakes 0.2.0
 
 Published from `b1603accb19cefcf8473e97c0aeaf643f4903a75` at 2026-11-25T10:11:02.444713+00:00.
