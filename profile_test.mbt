@@ -94,3 +94,32 @@ test "decimal X endpoint can coincide with its B/E parent" {
   }
   assert_eq(parent.self_ns, 100L)
 }
+
+///|
+test "large decimal timestamps retain picoseconds before nanosecond rounding" {
+  let complete =
+    #|[{"ph":"X","pid":1,"tid":1,"name":"edge","ts":999999999999.000499,"dur":1e-6}]
+  let paired =
+    #|[{"ph":"B","pid":1,"tid":1,"name":"edge","ts":999999999999.000499},{"ph":"E","pid":1,"tid":1,"ts":999999999999000500e-6}]
+  for source in [complete, paired] {
+    let profile = @tracegate.profile(@tracegate.parse_json(source))
+    guard profile.lookup("", "edge") is Some(stats) else {
+      fail("expected span")
+    }
+    assert_eq(stats.total_ns, 1L)
+    assert_eq(stats.self_ns, 1L)
+  }
+}
+
+///|
+test "fractional timestamp spellings cannot hide out-of-range values" {
+  let prefix = "[{\"ph\":\"X\",\"pid\":1,\"tid\":1,\"name\":\"edge\",\"dur\":0,\"ts\":"
+  for spelling in ["1000000000000.00000001", "-1e-999"] {
+    let trace = @tracegate.parse_json(prefix + spelling + "}]")
+    try @tracegate.profile(trace) |> ignore catch {
+      @tracegate.TraceError(code, _) => assert_eq(code, "invalid_trace")
+    } noraise {
+      _ => fail("out-of-range timestamp accepted")
+    }
+  }
+}

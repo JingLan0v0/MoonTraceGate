@@ -1,3 +1,16 @@
+# Local timing precision fix — 2026-11-26
+
+Epoch-sized fractional timestamps now convert from the original JSON decimal
+to picoseconds. The old CLI reported zero for a 1 ns interval across a rounding
+boundary and passed a zero budget. The revised CLI reports 1 ns and exits 1 for
+that budget. Regressions also cover equivalent B/E events and decimal spellings
+just outside the timestamp domain.
+
+Debug and release each passed 13 units, 132 interval models, 40 independent
+percentile cases and six invalid series cases. PowerShell smoke passed. A
+separate 96-interval CLI check matched a BigInt reference for exact decimal
+and exponent spellings at ordinary and large timestamps.
+
 # MoonTraceGate 0.2.1 published - 2026-11-26
 
 Published from 9b4cc8af90c03f6db9bf0697480fc1dcd9836fcb. The public registry download

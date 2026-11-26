@@ -1,8 +1,10 @@
 # Attribution and validation
 
-Normalize synchronous events to integer picosecond (ps) timestamps. Convert
-whole microseconds separately from their fractional part to avoid scaling a
-large double to 10^18. Add complete-event duration in integer picoseconds,
+Normalize synchronous events to integer picosecond (ps) timestamps. For text
+input, scale the original decimal timestamp or duration and round half a
+picosecond up. For programmatic JSON numbers without a decimal spelling,
+convert whole microseconds separately from the decoded fractional part.
+Add complete-event duration in integer picoseconds,
 then sort by process, thread, timestamp and index. Preserve picosecond
 endpoints through structural validation. Pair begin and end using a stack on each
 track. Complete events contribute spans directly. Then sort complete spans by

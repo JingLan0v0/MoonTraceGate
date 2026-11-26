@@ -76,7 +76,7 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
   let phase = match ph {
     "B" => Begin
     "E" => End
-    "X" => Complete(picoseconds(required(obj, "dur"), "dur", 1000000000.0))
+    "X" => Complete(picoseconds(required(obj, "dur"), "dur", 1000000000L))
     _ => return None
   }
   let cat = match obj.get("cat") {
@@ -95,7 +95,7 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
     tid: integer(required(obj, "tid"), "tid", 2147483647.0),
     cat,
     name,
-    start: picoseconds(required(obj, "ts"), "ts", 1000000000000.0),
+    start: picoseconds(required(obj, "ts"), "ts", 1000000000000L),
     stop: 0L,
     index,
   }

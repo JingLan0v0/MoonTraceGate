@@ -36,7 +36,7 @@ fn integer(
   }
   let decoded = n.to_int64()
   if repr is Some(spelling) &&
-    exact_nonnegative_integer(spelling) != Some(decoded) {
+    bounded_decimal(spelling, 0, limit.to_int64()) != Some(decoded) {
     raise TraceError(
       "invalid_input",
       field + " must be a bounded nonnegative integer",
@@ -49,15 +49,20 @@ fn integer(
 fn picoseconds(
   value : Json,
   field : String,
-  limit : Double,
+  limit : Int64,
 ) -> Int64 raise TraceError {
-  guard value is Number(n, ..) && n >= 0.0 && n <= limit else {
-    raise TraceError(
-      "invalid_trace",
-      field + " must be bounded nonnegative microseconds",
-    )
+  let message = field + " must be bounded nonnegative microseconds"
+  guard value is Number(n, repr~) && n >= 0.0 && n <= limit.to_double() else {
+    raise TraceError("invalid_trace", message)
   }
-  // Keep whole microseconds exact even at the top of the timestamp range.
+  if repr is Some(spelling) {
+    guard bounded_decimal(spelling, 6, limit * 1000000L, round_fraction=true)
+      is Some(picos) else {
+      raise TraceError("invalid_trace", message)
+    }
+    return picos
+  }
+  // Programmatic JSON numbers without spelling have only the decoded value.
   let whole = n.floor()
   whole.to_int64() * 1000000L + ((n - whole) * 1000000.0).round().to_int64()
 }

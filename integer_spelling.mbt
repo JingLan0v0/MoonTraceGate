@@ -13,9 +13,14 @@ fn is_digit(code : Int32) -> Bool {
 }
 
 ///|
-/// Validate an exact decimal coefficient and exponent against the accepted
-/// integer range, without converting the text through floating point.
-fn exact_nonnegative_integer(spelling : String) -> Int64? {
+/// Decode a nonnegative JSON decimal within bounds. Positive scales can
+/// round to the nearest unit, using the first discarded digit.
+fn bounded_decimal(
+  spelling : String,
+  scale : Int32,
+  limit : Int64,
+  round_fraction~ : Bool = false,
+) -> Int64? {
   if spelling.length() == 0 || spelling.length() > 200000 {
     return None
   }
@@ -26,9 +31,9 @@ fn exact_nonnegative_integer(spelling : String) -> Int64? {
   let mut whole_digits = 0
   let mut fractional_digits = 0
   let mut after_dot = false
-  let max_safe_integer = 9007199254740991L
-  let mut coefficient = 0L
-  let mut trailing_zeros = 0
+  let mut leading_zeros = 0
+  let mut first_nonzero = -1
+  let mut last_nonzero = 0
   while true {
     let code = unit_at(units, cursor)
     if is_digit(code) {
@@ -38,25 +43,13 @@ fn exact_nonnegative_integer(spelling : String) -> Int64? {
       } else {
         whole_digits += 1
       }
-      if digit == 0 {
-        if coefficient != 0L {
-          trailing_zeros += 1
+      if digit != 0 {
+        if first_nonzero < 0 {
+          first_nonzero = cursor
         }
-      } else {
-        if negative || trailing_zeros > 15 {
-          return None
-        }
-        for _ in 0..<trailing_zeros {
-          coefficient *= 10L
-          if coefficient > max_safe_integer {
-            return None
-          }
-        }
-        coefficient = coefficient * 10L + digit.to_int64()
-        if coefficient > max_safe_integer {
-          return None
-        }
-        trailing_zeros = 0
+        last_nonzero = whole_digits + fractional_digits
+      } else if first_nonzero < 0 {
+        leading_zeros += 1
       }
       cursor += 1
     } else if code == 46 && !after_dot && whole_digits > 0 {
@@ -84,7 +77,7 @@ fn exact_nonnegative_integer(spelling : String) -> Int64? {
       return None
     }
     // An exponent beyond the spelling length cannot be cancelled by its digits.
-    let cap = units.length() + 16
+    let cap = units.length() + 25
     while is_digit(code) {
       let next = exponent * 10 + code - 48
       exponent = if next > cap { cap } else { next }
@@ -98,18 +91,49 @@ fn exact_nonnegative_integer(spelling : String) -> Int64? {
   if cursor != units.length() {
     return None
   }
-  if coefficient == 0L {
+  if first_nonzero < 0 {
     return Some(0L)
   }
-  let shift = trailing_zeros - fractional_digits + exponent
-  if shift < 0 || shift > 15 {
+  if negative {
     return None
   }
-  for _ in 0..<shift {
-    coefficient *= 10L
-    if coefficient > max_safe_integer {
+  let integer_digits = whole_digits + exponent + scale - leading_zeros
+  let significant_digits = last_nonzero - leading_zeros
+  let has_fraction = significant_digits > integer_digits
+  if integer_digits > 19 || (has_fraction && !round_fraction) {
+    return None
+  }
+  if integer_digits < 0 {
+    return Some(0L)
+  }
+  let mut value = 0L
+  cursor = first_nonzero
+  for index in 0..<integer_digits {
+    let digit = if index < significant_digits {
+      if unit_at(units, cursor) == 46 {
+        cursor += 1
+      }
+      let digit = (unit_at(units, cursor) - 48).to_int64()
+      cursor += 1
+      digit
+    } else {
+      0L
+    }
+    if value > (limit - digit) / 10L {
       return None
     }
+    value = value * 10L + digit
   }
-  Some(coefficient)
+  if has_fraction {
+    if value == limit {
+      return None
+    }
+    if unit_at(units, cursor) == 46 {
+      cursor += 1
+    }
+    if unit_at(units, cursor) >= 53 {
+      value += 1L
+    }
+  }
+  Some(value)
 }

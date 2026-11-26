@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Preserve picosecond precision for large timestamps in JSON trace files.
+
 ## 0.2.1 — 2026-11-26
 
 - Reject fractional JSON spellings that round to an integer in budget limits,
