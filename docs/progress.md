@@ -1,3 +1,8 @@
+# MoonTraceGate 0.2.2 published — 2026-11-27
+
+Published from `2a25a1f34d3ac504612a201ae7b509cc13325c67`. The public ZIP and exact-version install
+were verified. See [acceptance](acceptance.md) for release evidence.
+
 # Local series memory optimization — 2026-11-27
 
 Series profiling collects each rule's measurements immediately after profiling
