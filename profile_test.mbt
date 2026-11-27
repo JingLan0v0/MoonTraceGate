@@ -123,3 +123,17 @@ test "fractional timestamp spellings cannot hide out-of-range values" {
     }
   }
 }
+
+///|
+test "unsorted complete events retain nesting and lane attribution" {
+  let input =
+    #|[{"ph":"X","pid":1,"tid":1,"name":"late","ts":4,"dur":1},{"ph":"X","pid":1,"tid":1,"name":"child","ts":0,"dur":2},{"ph":"X","pid":1,"tid":2,"name":"other","ts":1,"dur":3},{"ph":"X","pid":1,"tid":1,"name":"outer","ts":0,"dur":5}]
+  let result = @tracegate.profile(@tracegate.parse_json(input))
+  guard result.lookup("", "outer") is Some(outer) &&
+    result.lookup("", "other") is Some(other) else {
+    fail("expected both lanes")
+  }
+  assert_eq(outer.total_ns, 5000L)
+  assert_eq(outer.self_ns, 2000L)
+  assert_eq(other.self_ns, 3000L)
+}

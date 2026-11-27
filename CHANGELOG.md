@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 — 2026-11-27
+
+- Skip the pairing sort for captures that contain only complete duration events.
+
 ## 0.2.2 — 2026-11-27
 
 - Collect series budget measurements one capture at a time to avoid retaining all profiles.

@@ -104,14 +104,17 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
 
 ///|
 fn collect_spans(events : Array[Event]) -> Array[Span] raise TraceError {
-  events.sort_by((a, b) => {
-    let order = by_lane_and_start(a.span, b.span)
-    if order == 0 {
-      a.span.index.compare(b.span.index)
-    } else {
-      order
-    }
-  })
+  // Complete events already carry both endpoints. Only B/E pairing needs this sort.
+  if events.any(event => !(event.phase is Complete(_))) {
+    events.sort_by((a, b) => {
+      let order = by_lane_and_start(a.span, b.span)
+      if order == 0 {
+        a.span.index.compare(b.span.index)
+      } else {
+        order
+      }
+    })
+  }
   let open : Array[Span] = []
   let spans : Array[Span] = []
   for event in events {
