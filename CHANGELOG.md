@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.2 — 2026-11-27
 
 - Collect series budget measurements one capture at a time to avoid retaining all profiles.
 
