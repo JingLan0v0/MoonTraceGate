@@ -151,6 +151,7 @@ fn collect_spans(events : Array[Event]) -> Array[Span] raise TraceError {
 ///|
 priv struct Frame {
   span : Span
+  duration_ns : Int64
   mut children_ns : Int64
 }
 
@@ -165,7 +166,7 @@ fn finish_span(
   frame : Frame,
 ) -> Unit {
   let span = frame.span
-  let dur = span_ns(span)
+  let dur = frame.duration_ns
   let key = (span.cat, span.name)
   let prior = totals
     .get(key)
@@ -200,7 +201,7 @@ fn attribute(
   let totals : Map[(String, String), SpanStats] = Map([])
   for span in spans {
     if span.stop == span.start {
-      finish_span(totals, { span, children_ns: 0L, })
+      finish_span(totals, { span, duration_ns: 0L, children_ns: 0L, })
       continue
     }
     while stack.last() is Some(parent) &&
@@ -208,13 +209,14 @@ fn attribute(
       stack.pop() |> ignore
       finish_span(totals, parent)
     }
+    let duration_ns = span_ns(span)
     if stack.last() is Some(parent) {
       if span.stop > parent.span.stop {
         raise trace_error(span, "crossing duration spans on the same thread")
       }
-      parent.children_ns += span_ns(span)
+      parent.children_ns += duration_ns
     }
-    stack.push({ span, children_ns: 0L, })
+    stack.push({ span, duration_ns, children_ns: 0L, })
   }
   for frame in stack {
     finish_span(totals, frame)

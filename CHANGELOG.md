@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4 — 2026-11-28
+
+- Reuse each span duration for its own report and its enclosing span.
+
 ## 0.2.3 — 2026-11-27
 
 - Skip the pairing sort for captures that contain only complete duration events.

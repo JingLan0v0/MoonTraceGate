@@ -137,3 +137,24 @@ test "unsorted complete events retain nesting and lane attribution" {
   assert_eq(outer.self_ns, 2000L)
   assert_eq(other.self_ns, 3000L)
 }
+
+///|
+test "nested nanosecond durations reuse the same rounded endpoints" {
+  let source =
+    #|[{"ph":"X","pid":1,"tid":1,"name":"root","ts":0.00049,"dur":0.00305},{"ph":"X","pid":1,"tid":1,"name":"child","ts":0.00051,"dur":0.002},{"ph":"X","pid":1,"tid":1,"name":"inner","ts":0.00149,"dur":0.00102},{"ph":"X","pid":1,"tid":1,"name":"marker","ts":0.001,"dur":0}]
+  let profile = @tracegate.profile(@tracegate.parse_json(source))
+  guard profile.lookup("", "root") is Some(root) &&
+    profile.lookup("", "child") is Some(child) &&
+    profile.lookup("", "inner") is Some(inner) &&
+    profile.lookup("", "marker") is Some(marker) else {
+    fail("expected all four spans")
+  }
+  assert_eq(root.total_ns, 4L)
+  assert_eq(root.self_ns, 2L)
+  assert_eq(child.total_ns, 2L)
+  assert_eq(child.self_ns, 0L)
+  assert_eq(inner.total_ns, 2L)
+  assert_eq(inner.self_ns, 2L)
+  assert_eq(marker.total_ns, 0L)
+  assert_eq(marker.count, 1)
+}

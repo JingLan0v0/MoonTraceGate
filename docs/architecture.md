@@ -11,7 +11,8 @@ track. Complete events contribute spans directly. If the capture uses only
 complete events, skip the pairing sort. Then sort complete spans by
 track, ascending start, descending end and original index. A stack retains
 only the spans that can contain the next positive interval. Round both endpoints
-to nanoseconds when adding a duration to a metric. A child ending
+to nanoseconds once per positive span. The measured duration is reused for
+parent accounting and for the span's own metrics. A child ending
 past the parent boundary is a crossing trace error.
 
 The direct positive child intervals of a node in this containment tree are
