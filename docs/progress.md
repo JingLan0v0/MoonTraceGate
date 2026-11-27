@@ -1,3 +1,8 @@
+# MoonTraceGate 0.2.4 published — 2026-11-28
+
+Published from `cff49cd1c3f03693b5096ee112b1c8cbfe8ed241`. Reports for 3,500 nested duration and marker events and 15 metric rules were byte-identical across the two CLI builds.
+See [acceptance](acceptance.md) for the verified ZIP and exact-version consumer.
+
 # MoonTraceGate 0.2.3 published — 2026-11-27
 
 Published from `16d1f4c5bf1fb6711a5a14db286905a311a3fd2c`. Complete duration events need only the attribution sort. The CLI report matched the previous release byte for byte for 3,500 shuffled complete events and a mixed B/E/X trace.
