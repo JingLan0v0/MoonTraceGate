@@ -1,3 +1,9 @@
+# MoonTraceGate 0.2.3 published — 2026-11-27
+
+Published from `16d1f4c5bf1fb6711a5a14db286905a311a3fd2c`. Complete duration events need only the attribution sort. The CLI report matched the previous release byte for byte for 3,500 shuffled complete events and a mixed B/E/X trace.
+The exact public package installs and passes both modes. See
+[acceptance](acceptance.md) for CI and registry receipts.
+
 # MoonTraceGate 0.2.2 published — 2026-11-27
 
 Published from `2a25a1f34d3ac504612a201ae7b509cc13325c67`. The public ZIP and exact-version install

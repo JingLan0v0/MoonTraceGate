@@ -1,5 +1,22 @@
 # Acceptance evidence
 
+## Mooncakes 0.2.3 — 2026-11-27
+
+Release source: `16d1f4c5bf1fb6711a5a14db286905a311a3fd2c`. [GitHub Actions](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/45956453717) passed
+on Windows and Ubuntu for this commit. All 51 archive files
+match the release source. Full Debug, Release and PowerShell verification
+passed after clean extraction. Complete duration events need only the attribution sort. The CLI report matched the previous release byte for byte for 3,500 shuffled complete events and a mixed B/E/X trace.
+
+Mooncakes preflight returned 202 Accepted and publication returned 200 OK.
+The [public version](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.3) returned HTTP 200.
+The [registry ZIP](https://download.mooncakes.io/user/JingLan0v0/tracegate/0.2.3.zip) and the tested publisher ZIP
+match the public SHA-256 `da45b55a4157f2afb89f52fe7f35ca13927fa426b571b0563be70e7eedb4b506`.
+Registry publication timestamp: 2026-11-27T15:09:53.0962900+08:00.
+
+An anonymous consumer installed `JingLan0v0/tracegate@0.2.3` from a fresh cache.
+All 51 installed files matched the public ZIP.
+Debug and Release passed. The installed build verified unsorted complete events and separate lane attribution.
+
 ## Mooncakes 0.2.2 — 2026-11-27
 
 Release source: `2a25a1f34d3ac504612a201ae7b509cc13325c67`. [GitHub Actions](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/45955479778) passed
