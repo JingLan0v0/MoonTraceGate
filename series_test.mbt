@@ -113,3 +113,40 @@ test "series accepts exact decimal integers and rejects rounded percentiles" {
     _ => fail("accepted fractional percentile")
   }
 }
+
+///|
+test "series retains rule order and each side's sample order and count" {
+  let policy =
+    #|{"rules":[{"name":"missing","metric":"total_ns","limit_ns":1000},{"name":"build","metric":"self_ns","max_growth_ns":1000}]}
+  let baseline = traces([3, 1, 2])
+  let candidate = traces([3, 0, 1, 2])
+  guard @tracegate.check_series(
+      baseline,
+      candidate,
+      @tracegate.parse_json(policy),
+    )
+    is Object(report) else {
+    fail("expected series report")
+  }
+  assert_eq(report.get("baseline_sample_count"), Some(Json::number(3.0)))
+  assert_eq(report.get("candidate_sample_count"), Some(Json::number(4.0)))
+  guard report.get("rules") is Some(Array(rows)) &&
+    rows[0] is Object(missing) &&
+    rows[1] is Object(build) else {
+    fail("expected two rules in order")
+  }
+  assert_eq(missing.get("name"), Some(Json::string("missing")))
+  assert_eq(build.get("name"), Some(Json::string("build")))
+  assert_eq(
+    missing.get("candidate_samples_ns"),
+    Some(Json::array(Array::make(4, Json::null()))),
+  )
+  assert_eq(
+    build.get("baseline_samples_ns"),
+    Some(Json::array([3000.0, 1000.0, 2000.0].map(n => Json::number(n)))),
+  )
+  assert_eq(
+    build.get("candidate_samples_ns"),
+    Some(Json::array([3000.0, 0.0, 1000.0, 2000.0].map(n => Json::number(n)))),
+  )
+}

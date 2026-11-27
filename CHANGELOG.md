@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Collect series budget measurements one capture at a time to avoid retaining all profiles.
+
 - Preserve picosecond precision for large timestamps in JSON trace files.
 
 ## 0.2.1 — 2026-11-26

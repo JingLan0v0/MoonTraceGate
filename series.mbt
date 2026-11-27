@@ -1,8 +1,9 @@
 ///|
-fn profile_samples(
+fn measure_samples(
   input : Json,
   label : String,
-) -> Array[Profile] raise TraceError {
+  rules : Array[Rule],
+) -> (Array[Array[Int64?]], Int32) raise TraceError {
   guard input is Array(samples) &&
     samples.length() >= 3 &&
     samples.length() <= 32 else {
@@ -11,15 +12,20 @@ fn profile_samples(
       label + " must be an array of 3..32 traces",
     )
   }
-  samples.mapi((i, trace) => {
-    profile(trace) catch {
+  let measurements : Array[Array[Int64?]] = rules.map(_ => [])
+  for i, trace in samples {
+    let captured = profile(trace) catch {
       TraceError(code, detail) =>
         raise TraceError(
           code,
           label + " sample " + (i + 1).to_string() + ": " + detail,
         )
     }
-  })
+    for index, rule in rules {
+      measurements[index].push(rule_measurement(captured, rule))
+    }
+  }
+  (measurements, samples.length())
 }
 
 ///|
@@ -61,12 +67,14 @@ pub fn check_series(
     raise TraceError("invalid_input", "percentile must be in 1..100")
   }
   let rules = read_rules(required(options, "rules"))
-  let previous = profile_samples(baseline, "baseline")
-  let current = profile_samples(candidate, "candidate")
+  let (previous, baseline_count) = measure_samples(baseline, "baseline", rules)
+  let (current, candidate_count) = measure_samples(
+    candidate, "candidate", rules,
+  )
   let mut passed = true
-  let reports = rules.map(rule => {
-    let base_samples = previous.map(profile => rule_measurement(profile, rule))
-    let next_samples = current.map(profile => rule_measurement(profile, rule))
+  let reports = rules.mapi((index, rule) => {
+    let base_samples = previous[index]
+    let next_samples = current[index]
     let (record, ok) = budget_result(
       rule,
       nearest_rank(base_samples, pct),
@@ -81,8 +89,8 @@ pub fn check_series(
     Map([
       ("status", Json::string(if passed { "pass" } else { "fail" })),
       ("percentile", Json::number(pct.to_double())),
-      ("baseline_sample_count", Json::number(previous.length().to_double())),
-      ("candidate_sample_count", Json::number(current.length().to_double())),
+      ("baseline_sample_count", Json::number(baseline_count.to_double())),
+      ("candidate_sample_count", Json::number(candidate_count.to_double())),
       ("rules", Json::array(reports)),
     ]),
   )

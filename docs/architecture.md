@@ -23,6 +23,9 @@ by 4096 * 10^12 ns and serialized without losing integer precision.
 
 Comparison reports one result per requested metric key. It applies inclusive
 absolute and delta bounds and distinguishes a missing measurement from zero.
+In series mode, process each capture in input order. Retain only the selected
+measurement for each rule and sample. Each capture's complete profile can be
+released after its measurements have been recorded.
 The CLI interprets a failing budget as a valid report and exits 1. Input errors
 abort before emitting any report. Core analysis and report construction live
 in MoonBit. Node supplies file/process I/O and independent test tooling.

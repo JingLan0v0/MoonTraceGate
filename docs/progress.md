@@ -1,3 +1,16 @@
+# Local series memory optimization — 2026-11-27
+
+Series profiling collects each rule's measurements immediately after profiling
+a capture. The series retains the output measurements while the complete
+profile is local to one iteration. A regression covers unequal series lengths,
+rule and sample ordering, and a missing measurement.
+
+Both local builds passed 14 unit tests, 132 interval models, 40 independent
+percentile comparisons and six invalid series cases. PowerShell smoke passed.
+The 32-by-32 capture comparison used 112 groups per capture and produced
+byte-identical CLI reports. Across nine alternating runs on this Windows
+machine, median peak RSS was 78.57 MiB before and 78.10 MiB after.
+
 # Local timing precision fix — 2026-11-26
 
 Epoch-sized fractional timestamps now convert from the original JSON decimal
