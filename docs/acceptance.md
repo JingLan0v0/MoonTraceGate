@@ -1,5 +1,23 @@
 # Acceptance evidence
 
+## Mooncakes 0.2.6 — 2026-11-28
+
+Release source: `c5348e6f4cccfbc4806d75fc153b3a6036d91e92`. [GitHub Actions](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/46118847677)
+passed on Windows and Ubuntu for that commit. Full Debug, Release and
+PowerShell tests passed on a clean extraction. All 51
+packaged files match the release source.
+
+All 20 CLI reports matched the prior release byte for byte, including minimum, maximum, interior and missing-value cases. A regression checks the p95 rank transition between 19 and 20 samples.
+
+Mooncakes returned 202 Accepted for preflight and 200 OK for publication.
+The [public version](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.6) returned HTTP 200. The
+[public ZIP](https://download.mooncakes.io/user/JingLan0v0/tracegate/0.2.6.zip) and the publisher archive match the
+registry SHA-256 `469ff8014483c2146b33bdd356d6a762a42176df8ddb0603784c0cfa9961a391`. Published at 2026-11-28T06:56:59.078042+00:00.
+
+An anonymous consumer installed the exact version from a fresh cache.
+All installed files matched the public ZIP byte for byte. Debug and
+Release passed. The installed API passed the 19/20-sample p95 boundary.
+
 ## Mooncakes 0.2.5 — 2026-11-28
 
 Release source: `ebd2f74c3054fcf5c9b68c3f798a946f5588efaf`. [GitHub Actions](https://github.com/JingLan0v0/MoonTraceGate/actions/runs/46118120985)

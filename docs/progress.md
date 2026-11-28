@@ -1,3 +1,8 @@
+# MoonTraceGate 0.2.6 published — 2026-11-28
+
+Published from `c5348e6f4cccfbc4806d75fc153b3a6036d91e92`. All 20 CLI reports matched the prior release byte for byte, including minimum, maximum, interior and missing-value cases. A regression checks the p95 rank transition between 19 and 20 samples.
+See [acceptance](acceptance.md) for the public archive and exact install verification.
+
 # MoonTraceGate 0.2.5 published — 2026-11-28
 
 Published from `ebd2f74c3054fcf5c9b68c3f798a946f5588efaf`. The pairing sort takes 8 of 3,508 records in the mixed comparison. The CLI report and the malformed-input diagnostic match the previous release byte for byte.
