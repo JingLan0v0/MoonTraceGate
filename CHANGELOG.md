@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.5 — 2026-11-28
+
+- Sort only begin and end records before pairing mixed traces.
+
 ## 0.2.4 — 2026-11-28
 
 - Reuse each span duration for its own report and its enclosing span.

@@ -4,11 +4,10 @@ Normalize synchronous events to integer picosecond (ps) timestamps. For text
 input, scale the original decimal timestamp or duration and round half a
 picosecond up. For programmatic JSON numbers without a decimal spelling,
 convert whole microseconds separately from the decoded fractional part.
-Add complete-event duration in integer picoseconds,
-then sort by process, thread, timestamp and index. Preserve picosecond
-endpoints through structural validation. Pair begin and end using a stack on each
-track. Complete events contribute spans directly. If the capture uses only
-complete events, skip the pairing sort. Then sort complete spans by
+Add complete-event duration in integer picoseconds. Preserve picosecond
+endpoints through structural validation. Sort only begin and end records by
+process, thread, timestamp and index and pair them with a stack per track.
+Complete events contribute spans directly. Then sort complete spans by
 track, ascending start, descending end and original index. A stack retains
 only the spans that can contain the next positive interval. Round both endpoints
 to nanoseconds once per positive span. The measured duration is reused for

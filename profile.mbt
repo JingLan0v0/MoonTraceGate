@@ -10,16 +10,15 @@ priv struct Span {
 }
 
 ///|
-priv enum Phase {
-  Begin
-  End
-  Complete(Int64)
+priv struct PairingEvent {
+  span : Span
+  opens_span : Bool
 }
 
 ///|
-priv struct Event {
-  span : Span
-  phase : Phase
+priv enum Event {
+  Complete(Span)
+  Pairing(PairingEvent)
 }
 
 ///|
@@ -73,10 +72,9 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
     raise TraceError("invalid_trace", "event must be an object")
   }
   let ph = read_text(required(obj, "ph"), "ph")
-  let phase = match ph {
-    "B" => Begin
-    "E" => End
-    "X" => Complete(picoseconds(required(obj, "dur"), "dur", 1000000000L))
+  let duration = match ph {
+    "B" | "E" => None
+    "X" => Some(picoseconds(required(obj, "dur"), "dur", 1000000000L))
     _ => return None
   }
   let cat = match obj.get("cat") {
@@ -99,53 +97,54 @@ fn parse_event(value : Json, index : Int32) -> Event? raise TraceError {
     stop: 0L,
     index,
   }
-  Some({ span, phase, })
+  match duration {
+    Some(duration_ps) =>
+      Some(Complete({ ..span, stop: span.start + duration_ps, }))
+    None => Some(Pairing({ span, opens_span: ph == "B", }))
+  }
 }
 
 ///|
-fn collect_spans(events : Array[Event]) -> Array[Span] raise TraceError {
-  // Complete events already carry both endpoints. Only B/E pairing needs this sort.
-  if events.any(event => !(event.phase is Complete(_))) {
-    events.sort_by((a, b) => {
-      let order = by_lane_and_start(a.span, b.span)
-      if order == 0 {
-        a.span.index.compare(b.span.index)
-      } else {
-        order
-      }
-    })
+fn pair_spans(
+  events : Array[PairingEvent],
+  spans : Array[Span],
+) -> Unit raise TraceError {
+  if events.is_empty() {
+    return
   }
+  events.sort_by((a, b) => {
+    let order = by_lane_and_start(a.span, b.span)
+    if order == 0 {
+      a.span.index.compare(b.span.index)
+    } else {
+      order
+    }
+  })
   let open : Array[Span] = []
-  let spans : Array[Span] = []
   for event in events {
     let s = event.span
     if open.last() is Some(previous) && !same_lane(s, previous) {
       raise trace_error(previous, "unclosed begin")
     }
-    match event.phase {
-      Begin => open.push(s)
-      Complete(duration) => spans.push({ ..s, stop: s.start + duration, })
-      End => {
-        guard open.pop() is Some(begin) else {
-          raise trace_error(s, "end has no matching begin on this thread")
-        }
-        if (s.name != "" && s.name != begin.name) ||
-          (s.cat != "" && s.cat != begin.cat) {
-          raise trace_error(s, "end label differs from its open span")
-        }
-        if s.start - begin.start > 1000000000000000L {
-          raise trace_error(
-            begin, "span duration exceeds 1000000000 microseconds",
-          )
-        }
-        spans.push({ ..begin, stop: s.start, })
-      }
+    if event.opens_span {
+      open.push(s)
+      continue
     }
+    guard open.pop() is Some(begin) else {
+      raise trace_error(s, "end has no matching begin on this thread")
+    }
+    if (s.name != "" && s.name != begin.name) ||
+      (s.cat != "" && s.cat != begin.cat) {
+      raise trace_error(s, "end label differs from its open span")
+    }
+    if s.start - begin.start > 1000000000000000L {
+      raise trace_error(begin, "span duration exceeds 1000000000 microseconds")
+    }
+    spans.push({ ..begin, stop: s.start, })
   }
   if open.last() is Some(s) {
     raise trace_error(s, "unclosed begin")
   }
-  spans
 }
 
 ///|
@@ -239,13 +238,16 @@ pub fn profile(trace : Json) -> Profile raise TraceError {
   if values.length() > 4096 {
     raise TraceError("limit_exceeded", "trace has more than 4096 events")
   }
-  let events : Array[Event] = []
+  let events : Array[PairingEvent] = []
+  let spans : Array[Span] = []
+  let mut skipped = 0
   for index, value in values {
-    if parse_event(value, index) is Some(event) {
-      events.push(event)
+    match parse_event(value, index) {
+      Some(Complete(span)) => spans.push(span)
+      Some(Pairing(event)) => events.push(event)
+      None => skipped += 1
     }
   }
-  let skipped = values.length() - events.length()
-  let spans = collect_spans(events)
+  pair_spans(events, spans)
   { totals: attribute(spans), spans: spans.length(), skipped, }
 }
