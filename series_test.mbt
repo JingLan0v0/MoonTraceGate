@@ -150,3 +150,40 @@ test "series retains rule order and each side's sample order and count" {
     Some(Json::array([3000.0, 0.0, 1000.0, 2000.0].map(n => Json::number(n)))),
   )
 }
+
+///|
+test "p95 scans the maximum for 19 samples but uses an interior rank for 20" {
+  let policy =
+    #|{"percentile":95,"rules":[{"name":"build","metric":"max_ns","limit_ns":2000}]}
+  let parsed = @tracegate.parse_json(policy)
+  for
+    (size, expected_status, measured) in [
+      (19, "fail", 9000.0),
+      (20, "pass", 2000.0),
+    ] {
+    let times = Array::make(size, 2)
+    times[size - 1] = 9
+    let baseline = traces(Array::make(size, 2))
+    let candidate = traces(times)
+    guard @tracegate.check_series(baseline, candidate, parsed) is Object(report) &&
+      report.get("rules") is Some(Array(rows)) &&
+      rows[0] is Object(row) else {
+      fail("expected series report")
+    }
+    assert_eq(report.get("status"), Some(Json::string(expected_status)))
+    assert_eq(row.get("candidate_ns"), Some(Json::number(measured)))
+  }
+  let full = traces(Array::make(19, 2))
+  guard traces(Array::make(19, 2)) is Array(samples) else {
+    fail("expected samples")
+  }
+  samples[18] = Json::array([])
+  guard @tracegate.check_series(full, Json::array(samples), parsed)
+    is Object(report) &&
+    report.get("rules") is Some(Array(rows)) &&
+    rows[0] is Object(row) else {
+    fail("expected series report")
+  }
+  assert_eq(report.get("status"), Some(Json::string("fail")))
+  assert_eq(row.get("candidate_ns"), Some(Json::null()))
+}

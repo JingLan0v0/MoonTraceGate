@@ -30,6 +30,17 @@ fn measure_samples(
 
 ///|
 fn nearest_rank(samples : Array[Int64?], percentile : Int32) -> Int64? {
+  let count = samples.length()
+  let rank = (percentile * count + 99) / 100
+  if rank == 1 || rank == count {
+    guard samples[0] is Some(first) else { return None }
+    let mut extreme = first
+    for i in 1..<count {
+      guard samples[i] is Some(ns) else { return None }
+      extreme = if rank == 1 { extreme.min(ns) } else { extreme.max(ns) }
+    }
+    return Some(extreme)
+  }
   let sorted : Array[Int64] = []
   for sample in samples {
     match sample {
@@ -38,7 +49,6 @@ fn nearest_rank(samples : Array[Int64?], percentile : Int32) -> Int64? {
     }
   }
   sorted.sort()
-  let rank = (percentile * sorted.length() + 99) / 100
   Some(sorted[rank - 1])
 }
 

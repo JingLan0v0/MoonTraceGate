@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.6 — 2026-11-28
+
+- Select minimum and maximum percentile ranks in one pass without allocating a sorted copy.
+
 ## 0.2.5 — 2026-11-28
 
 - Sort only begin and end records before pairing mixed traces.

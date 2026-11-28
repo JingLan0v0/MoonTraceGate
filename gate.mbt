@@ -172,5 +172,5 @@ pub fn check_budget(
 
 ///|
 pub fn version() -> String {
-  "0.2.5"
+  "0.2.6"
 }
