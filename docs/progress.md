@@ -1,3 +1,8 @@
+# MoonTraceGate 0.2.5 published — 2026-11-28
+
+Published from `ebd2f74c3054fcf5c9b68c3f798a946f5588efaf`. The pairing sort takes 8 of 3,508 records in the mixed comparison. The CLI report and the malformed-input diagnostic match the previous release byte for byte.
+See [acceptance](acceptance.md) for the public archive and exact install verification.
+
 # MoonTraceGate 0.2.4 published — 2026-11-28
 
 Published from `cff49cd1c3f03693b5096ee112b1c8cbfe8ed241`. Reports for 3,500 nested duration and marker events and 15 metric rules were byte-identical across the two CLI builds.

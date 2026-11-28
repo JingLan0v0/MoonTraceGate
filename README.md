@@ -34,10 +34,10 @@ See [input and report details](docs/format.md). Generate a trace locally via
 `node examples/capture.mjs capture.json` or run the public library sample
 `moon run examples/library --target js`.
 
-Install the verified [Mooncakes 0.2.4 release](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.4)
+Install the verified [Mooncakes 0.2.5 release](https://mooncakes.io/docs/JingLan0v0/tracegate@0.2.5)
 in your MoonBit project with:
 
-    moon add JingLan0v0/tracegate@0.2.4
+    moon add JingLan0v0/tracegate@0.2.5
 
 Import `JingLan0v0/tracegate` in `moon.pkg`. The source checkout includes
 `examples/library` as a runnable starting point.
